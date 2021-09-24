@@ -1,3 +1,4 @@
+// elements
 let randomNumber = Math.floor(Math.random() * 100) + 1;
 
 const guesses = document.querySelector('.guesses');
@@ -11,42 +12,49 @@ let guessCount = 1;
 let resetButton;
 guessField.focus();
 
+// functions
 function checkGuess() {
+    if (!guessField.value) {
+        return;
+    }
     let userGuess = Number(guessField.value);
+
+    if (isNaN(userGuess)) {
+        return;
+    }
     if (guessCount === 1) {
-        guesses.textContent = 'Intentos anteriores: ';
+        guesses.textContent = 'Previous guesses: ';
     }
     guesses.textContent += userGuess + ' ';
 
     if (userGuess === randomNumber) {
-        lastResult.textContent = '¡Felicidades! ¡Lo adivinaste!';
+        lastResult.textContent = 'Congratulations! You got it right!';
         lastResult.style.backgroundColor = 'green';
         lowOrHi.textContent = '';
         setGameOver();
     } else if (guessCount === 10) {
-        lastResult.textContent = '!!!Fin del juego!!!';
+        lastResult.textContent = '!!!GAME OVER!!!';
         setGameOver();
     } else {
-        lastResult.textContent = '¡Incorrecto!';
+        lastResult.textContent = 'Wrong!';
         lastResult.style.backgroundColor = 'red';
         if (userGuess < randomNumber) {
-            lowOrHi.textContent = '¡El número es muy bajo!';
+            lowOrHi.textContent = 'Last guess was too low!';
         } else if (userGuess > randomNumber) {
-            lowOrHi.textContent = '¡El número es muy grande!';
+            lowOrHi.textContent = 'Last guess was too high!';
         }
     }
 
     guessCount++;
     guessField.value = '';
     guessField.focus();
-    guessSubmit.addEventListener('click', checkGuess);
 }
 
 function setGameOver() {
     guessField.disabled = true;
     guessSubmit.disabled = true;
     resetButton = document.createElement('button');
-    resetButton.textContent = 'Iniciar nuevo juego';
+    resetButton.textContent = 'Start new game';
     document.body.append(resetButton);
     resetButton.addEventListener('click', resetGame);
 }
@@ -70,3 +78,19 @@ function resetGame() {
 
     randomNumber = Math.floor(Math.random() * 100) + 1;
 }
+
+// events
+guessSubmit.addEventListener('click', checkGuess);
+
+// guessField.onkeyup = function (e) {
+//     if(e.key === 'Enter') {
+//         guessSubmit.click();
+//     }
+// }
+
+guessField.addEventListener('keyup', function(e) {
+    console.log(e);
+    if (e.key === 'Enter') {
+        guessSubmit.click();
+    }
+});
